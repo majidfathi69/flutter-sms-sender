@@ -2,24 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'dart:io';
+import 'package:path/path.dart';
+import 'package:excel/excel.dart';
+
 void main() {
   runApp(const MainApp());
 }
-
-// class MainApp extends StatelessWidget {
-//   const MainApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const MaterialApp(
-//       home: Scaffold(
-//         body: Center(
-//           child: Text('Hello World!'),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
@@ -31,7 +20,29 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   static const platform = MethodChannel('sendSms');
 
-  Future<Null> sendSms() async {
+  readXLSXFile() {
+    var file = '/Users/majid/Projects/sen_sms/lib/assets/test.xlsx';
+    var bytes = File(file).readAsBytesSync();
+    var excel = Excel.decodeBytes(bytes);
+
+    for (var table in excel.tables.keys) {
+      if (kDebugMode) {
+        print(table);
+        //sheet Name
+        print(excel.tables[table]?.maxCols);
+        print(excel.tables[table]?.maxRows);
+      }
+      for (var row in excel.tables[table]!.rows) {
+        if (kDebugMode) {
+          print('${row[0]!.value}');
+          print(row[1]!.value.toString());
+          print('${row[2]!.value}');
+        }
+      }
+    }
+  }
+
+  Future<void> sendSms() async {
     if (kDebugMode) {
       print("SendSMS");
     }
@@ -57,9 +68,19 @@ class _MainAppState extends State<MainApp> {
       home: Scaffold(
         body: Container(
           alignment: Alignment.center,
-          // child: Text('sdf'),
-          child: ElevatedButton(
-              onPressed: () => sendSms(), child: const Text("Send SMS")),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () => readXLSXFile(),
+                child: const Text('test xlsx file'),
+              ),
+              ElevatedButton(
+                onPressed: () => sendSms(),
+                child: const Text("Send SMS"),
+              )
+            ],
+          ),
         ),
       ),
     );
