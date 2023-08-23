@@ -41,8 +41,6 @@ class _MainAppState extends State<MainApp> {
   }
 
   readXLSXFile(File file) async {
-    // var fileAddr = '/Users/majid/Projects/sen_sms/lib/assets/test.xlsx';
-    // var bytes = File(fileAddr).readAsBytesSync();
     var bytes = file.readAsBytesSync();
     var excel = Excel.decodeBytes(bytes);
 
@@ -103,6 +101,13 @@ class _MainAppState extends State<MainApp> {
         "msg": msg,
       });
       count.value += 1;
+      Get.snackbar(
+        'resualt',
+        result,
+        colorText: Colors.white,
+        backgroundColor: Colors.lightBlue,
+        icon: const Icon(Icons.add_alert),
+      );
       if (kDebugMode) {
         print(result);
       }
@@ -110,8 +115,8 @@ class _MainAppState extends State<MainApp> {
       Get.snackbar(
         'error',
         e.toString(),
-        colorText: Colors.red,
-        backgroundColor: Colors.lightBlue,
+        colorText: Colors.white,
+        backgroundColor: Colors.red,
         icon: const Icon(Icons.add_alert),
       );
       if (kDebugMode) {
@@ -122,7 +127,7 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       home: Scaffold(
         body: Container(
           alignment: Alignment.center,
